@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile | GameCoin Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com/">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+  <link href="../cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <link href="../cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../cdn.jsdelivr.net/npm/sweetalert2%4011/dist/sweetalert2.min.css">
+  <link rel="stylesheet" href="assets/css/designs.min9d30.css?version=1784376539">
+  <link rel="stylesheet" href="assets/css/gamecoinstore-theme.css">
+  <link rel="icon" type="image/x-icon" href="assets/images/rechargefavicon.png">
+  <style>
+    .profile-tab-bar {
+      background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
+      display: flex; align-items: center; padding: 0 1rem; gap: 1rem;
+      position: sticky; top: 60px; z-index: 100;
+    }
+    .profile-tab-bar a {
+      color: #fff !important; text-decoration: none;
+      padding: .75rem 1.2rem; font-weight: 600; font-size: .95rem;
+      border-bottom: 3px solid transparent; transition: .2s;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    .profile-tab-bar a.active, .profile-tab-bar a:hover { border-bottom-color: #fff; }
+    .profile-tab-bar .ms-auto { margin-left: auto !important; }
+    .profile-tab-bar .btn-logout {
+      background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.4);
+      color: #fff !important; border-radius: 8px; padding: .4rem 1rem;
+      font-weight: 600; font-size: .85rem; cursor: pointer;
+    }
+    .profile-tab-bar .btn-logout:hover { background: rgba(255,255,255,.3); }
+
+    .profile-card {
+      background: var(--gc-surface); border-radius: 16px;
+      padding: 2rem; max-width: 720px; margin: 2rem auto;
+    }
+    .avatar-ring {
+      width: 110px; height: 110px; border-radius: 50%;
+      border: 3px solid var(--gc-gold);
+      object-fit: cover; display: block; margin: 0 auto;
+      background: var(--gc-surface2);
+    }
+    .avatar-placeholder {
+      width: 110px; height: 110px; border-radius: 50%;
+      border: 3px solid var(--gc-gold);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto; background: var(--gc-surface2); font-size: 2.5rem;
+    }
+    .tier-badge { font-size: .8rem; color: var(--gc-muted); }
+    .tier-name { font-size: 1.3rem; font-weight: 700; color: var(--gc-gold); }
+    .progress-bar-track {
+      background: var(--gc-surface2); border-radius: 999px;
+      height: 8px; overflow: hidden; margin: .5rem 0;
+    }
+    .progress-bar-fill {
+      height: 100%; border-radius: 999px;
+      background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
+      transition: width .6s ease;
+    }
+    .info-row { display: flex; gap: .5rem; align-items: center; padding: .5rem 0;
+      border-bottom: 1px solid var(--gc-border); }
+    .info-row i { color: var(--gc-gold); width: 20px; text-align: center; }
+    .info-row span { color: var(--gc-muted); font-size: .85rem; min-width: 110px; }
+    .info-row strong { color: var(--gc-text); }
+
+    .order-card {
+      background: var(--gc-surface2); border-radius: 12px;
+      padding: 1rem 1.2rem; margin-bottom: .75rem;
+      border-left: 3px solid var(--gc-gold);
+    }
+    .order-card .badge-status {
+      font-size: .75rem; padding: .3rem .7rem; border-radius: 999px; font-weight: 600;
+    }
+    .badge-success { background: rgba(34,197,94,.15); color: #22c55e; }
+    .badge-pending { background: rgba(245,200,66,.15); color: var(--gc-gold); }
+
+    .incomplete-banner {
+      background: rgba(245,200,66,.1); border: 1px solid rgba(245,200,66,.3);
+      border-radius: 10px; padding: .75rem 1rem;
+      display: flex; align-items: center; gap: .75rem; margin-bottom: 1.5rem;
+    }
+    .incomplete-banner i { color: var(--gc-gold); font-size: 1.2rem; }
+    .incomplete-banner p { margin: 0; font-size: .9rem; color: var(--gc-text); }
+    .incomplete-banner a { color: var(--gc-gold) !important; font-weight: 600; }
+
+    #tab-profile, #tab-orders { display: none; }
+    #tab-profile.active, #tab-orders.active { display: block; }
+
+    .not-logged-in { text-align: center; padding: 4rem 1rem; }
+    .not-logged-in i { font-size: 3rem; color: var(--gc-gold); margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <nav id="mainNav" class="navbar navbar-expand-lg py-0">
+      <div class="container" style="flex-wrap:initial;align-items:center;">
+        <a class="navbar-brand" href="index-2.html">
+          <span class="gamecoin-logo-text">&#9670; GameCoin Store</span>
+        </a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 bricolage-grotesque">
+            <li class="nav-item"><a class="nav-link fw-bold" href="index-2.html">Home</a></li>
+            <li class="nav-item"><a class="nav-link fw-bold" href="blogs.html">Blogs</a></li>
+            <li class="nav-item"><a class="nav-link fw-bold" href="contact-us.html">Contact Us</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="whatsapp-ticker">
+      <div class="ticker-track">
+        <a href="https://wa.me/919867001303" class="ticker-item"><i class="fab fa-whatsapp me-2 text-success"></i>Trouble placing an order? Contact us on WhatsApp.</a>
+        <span class="ticker-divider"><i class="fas fa-circle"></i></span>
+        <a href="https://wa.me/919867001303" class="ticker-item"><i class="fab fa-whatsapp me-2 text-success"></i>Trouble placing an order? Contact us on WhatsApp.</a>
+        <span class="ticker-divider"><i class="fas fa-circle"></i></span>
+        <a href="https://wa.me/919867001303" class="ticker-item"><i class="fab fa-whatsapp me-2 text-success"></i>Trouble placing an order? Contact us on WhatsApp.</a>
+        <span class="ticker-divider"><i class="fas fa-circle"></i></span>
+        <a href="https://wa.me/919867001303" class="ticker-item"><i class="fab fa-whatsapp me-2 text-success"></i>Trouble placing an order? Contact us on WhatsApp.</a>
+        <span class="ticker-divider"><i class="fas fa-circle"></i></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Profile Tab Bar -->
+  <div class="profile-tab-bar" id="profileTabBar" style="display:none;">
+    <a href="#" class="active" id="btnTabProfile" onclick="switchTab('profile',this);return false;">
+      <i class="fas fa-user"></i> Profile
+    </a>
+    <a href="#" id="btnTabOrders" onclick="switchTab('orders',this);return false;">
+      <i class="fas fa-box"></i> Orders
+    </a>
+    <div class="ms-auto">
+      <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt me-1"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top: 1.5rem; padding-bottom: 4rem;">
+
+    <!-- Not logged in state -->
+    <div id="notLoggedIn" class="not-logged-in" style="display:none;">
+      <i class="fas fa-user-lock"></i>
+      <h4 class="fw-bold mt-3">You're not signed in</h4>
+      <p class="text-muted">Please log in to view your profile and orders.</p>
+      <a href="login.html" class="btn btn-info px-4 mt-2">Sign In</a>
+      <a href="register.html" class="btn btn-outline-light px-4 mt-2 ms-2">Register</a>
+    </div>
+
+    <!-- Loading state -->
+    <div id="loadingState" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status"></div>
+      <p class="mt-3 text-muted">Loading your profile…</p>
+    </div>
+
+    <!-- Profile Tab -->
+    <div id="tab-profile" class="active">
+      <div class="profile-card">
+        <h5 class="text-center fw-bold mb-4" style="color:var(--gc-gold);">My Profile</h5>
+        <hr style="border-color:var(--gc-border);">
+
+        <!-- Incomplete banner -->
+        <div class="incomplete-banner" id="incompleteBanner" style="display:none;">
+          <i class="fas fa-user-edit"></i>
+          <p>Your profile is incomplete. <a href="#" onclick="document.getElementById('editSection').scrollIntoView({behavior:'smooth'});return false;">Please add your phone number and date of birth</a> to continue smoothly.</p>
+        </div>
+
+        <!-- Avatar -->
+        <div class="text-center mb-3">
+          <div class="avatar-placeholder" id="avatarDisplay">
+            <i class="fas fa-user" style="color:var(--gc-gold);"></i>
+          </div>
+          <p class="mt-2 mb-0" style="font-size:.85rem; color:var(--gc-gold); cursor:pointer;">
+            <i class="fas fa-pencil-alt me-1"></i> Change Avatar
+          </p>
+        </div>
+
+        <!-- Tier progress -->
+        <div class="text-center mb-4">
+          <div class="tier-name" id="tierName">Coin Recruit</div>
+          <div class="tier-badge">Bronze Member &middot; New Member &middot; ₹0 spent</div>
+          <div class="progress-bar-track mt-2">
+            <div class="progress-bar-fill" id="tierProgress" style="width:0%"></div>
+          </div>
+          <small style="color:var(--gc-muted);" id="tierMsg">₹1,000 more to reach Coin Warrior</small>
+        </div>
+
+        <hr style="border-color:var(--gc-border);">
+
+        <!-- Profile info -->
+        <div class="mb-4">
+          <div class="info-row">
+            <i class="fas fa-user"></i>
+            <span>Name</span>
+            <strong id="profileName">—</strong>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-envelope"></i>
+            <span>Email</span>
+            <strong id="profileEmail">—</strong>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-phone"></i>
+            <span>Phone</span>
+            <strong id="profilePhone">—</strong>
+          </div>
+          <div class="info-row">
+            <i class="fas fa-birthday-cake"></i>
+            <span>Date of Birth</span>
+            <strong id="profileDob">—</strong>
+          </div>
+        </div>
+
+        <!-- Edit form -->
+        <div id="editSection">
+          <h6 class="fw-bold mb-3" style="color:var(--gc-gold);">
+            <i class="fas fa-edit me-2"></i>Update Profile
+          </h6>
+          <form id="updateProfileForm">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label" style="color:var(--gc-muted);">Display Name</label>
+                <input type="text" id="editName" class="form-control" placeholder="Your name">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" style="color:var(--gc-muted);">Phone Number</label>
+                <input type="tel" id="editPhone" maxlength="10" class="form-control" placeholder="10-digit number">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label" style="color:var(--gc-muted);">Date of Birth</label>
+                <input type="date" id="editDob" class="form-control">
+              </div>
+              <div class="col-12 mt-2">
+                <button type="submit" class="btn btn-info px-4" id="saveProfileBtn">
+                  <i class="fas fa-save me-2"></i>Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div id="tab-orders">
+      <div class="profile-card">
+        <h5 class="fw-bold mb-4" style="color:var(--gc-gold);">
+          <i class="fas fa-box me-2"></i>My Orders
+        </h5>
+        <hr style="border-color:var(--gc-border);">
+        <div id="ordersList">
+          <div class="text-center py-5" style="color:var(--gc-muted);">
+            <i class="fas fa-shopping-bag fa-3x mb-3" style="color:var(--gc-border);"></i>
+            <p>No orders yet. <a href="index-2.html" style="color:var(--gc-gold);">Browse games</a> and make your first top-up!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/8.1.0/mdb.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, updateProfile }
+      from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, orderBy, getDocs, serverTimestamp }
+      from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9Tt3ZyVKr5pv1I2BNyMpE0PD8_q7vitM",
+      authDomain: "gamecoinstore.firebaseapp.com",
+      projectId: "gamecoinstore",
+      storageBucket: "gamecoinstore.firebasestorage.app",
+      messagingSenderId: "901249184966",
+      appId: "1:901249184966:web:8de955ee50c35048ef13c7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    function showAlert(icon, title, text) {
+      return Swal.fire({ icon, title, text, background: "#1e1538", color: "#ece8ff", confirmButtonColor: "#f5c842" });
+    }
+
+    function switchTab(tab, el) {
+      document.querySelectorAll('.profile-tab-bar a').forEach(a => a.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('tab-profile').classList.toggle('active', tab === 'profile');
+      document.getElementById('tab-orders').classList.toggle('active', tab === 'orders');
+      if (tab === 'orders') loadOrders();
+    }
+    window.switchTab = switchTab;
+
+    const TIERS = [
+      { name: 'Coin Recruit',  next: 'Coin Warrior',  target: 1000 },
+      { name: 'Coin Warrior',  next: 'Coin Champion', target: 5000 },
+      { name: 'Coin Champion', next: 'Coin Legend',   target: 15000 },
+      { name: 'Coin Legend',   next: null,            target: null  }
+    ];
+
+    function getTier(spent) {
+      if (spent < 1000)  return { ...TIERS[0], spent };
+      if (spent < 5000)  return { ...TIERS[1], spent };
+      if (spent < 15000) return { ...TIERS[2], spent };
+      return { ...TIERS[3], spent };
+    }
+
+    async function loadProfile(user) {
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('profileTabBar').style.display = 'flex';
+      document.getElementById('tab-profile').classList.add('active');
+
+      // Set basic info from Auth
+      document.getElementById('profileName').textContent  = user.displayName || '—';
+      document.getElementById('profileEmail').textContent = user.email || '—';
+      document.getElementById('editName').value = user.displayName || '';
+
+      if (user.photoURL) {
+        document.getElementById('avatarDisplay').innerHTML =
+          `<img src="${user.photoURL}" class="avatar-ring" alt="avatar">`;
+      }
+
+      // Get extra info from Firestore
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) {
+        const data = snap.data();
+        document.getElementById('profilePhone').textContent = data.phone || '—';
+        document.getElementById('profileDob').textContent   = data.dob   || '—';
+        document.getElementById('editPhone').value = data.phone || '';
+        document.getElementById('editDob').value   = data.dob   || '';
+
+        // Show incomplete banner if missing phone or dob
+        if (!data.phone || !data.dob) {
+          document.getElementById('incompleteBanner').style.display = 'flex';
+        }
+
+        // Tier
+        const spent = data.totalSpent || 0;
+        const tier = getTier(spent);
+        document.getElementById('tierName').textContent = tier.name;
+        if (tier.next) {
+          const pct = Math.min(100, Math.round((spent / tier.target) * 100));
+          document.getElementById('tierProgress').style.width = pct + '%';
+          document.getElementById('tierMsg').textContent =
+            `₹${(tier.target - spent).toLocaleString()} more to reach ${tier.next}`;
+        } else {
+          document.getElementById('tierProgress').style.width = '100%';
+          document.getElementById('tierMsg').textContent = 'You have reached the highest tier!';
+        }
+      }
+    }
+
+    async function loadOrders() {
+      const user = auth.currentUser;
+      if (!user) return;
+      const list = document.getElementById('ordersList');
+      list.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-warning"></div></div>';
+      try {
+        const q = query(collection(db, 'orders'), where('userId', '==', user.uid), orderBy('createdAt', 'desc'));
+        const snap = await getDocs(q);
+        if (snap.empty) {
+          list.innerHTML = `<div class="text-center py-5" style="color:var(--gc-muted);">
+            <i class="fas fa-shopping-bag fa-3x mb-3" style="color:var(--gc-border);"></i>
+            <p>No orders yet. <a href="index-2.html" style="color:var(--gc-gold);">Browse games</a> and make your first top-up!</p>
+          </div>`;
+          return;
+        }
+        list.innerHTML = '';
+        snap.forEach(d => {
+          const o = d.data();
+          const date = o.createdAt?.toDate().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) || '—';
+          const statusClass = o.status === 'completed' ? 'badge-success' : 'badge-pending';
+          list.innerHTML += `
+            <div class="order-card">
+              <div class="d-flex justify-content-between align-items-start">
+                <div>
+                  <strong style="color:var(--gc-text);">${o.gameName || 'Game Top-Up'}</strong><br>
+                  <small style="color:var(--gc-muted);">${o.packageName || ''} &middot; ${date}</small>
+                </div>
+                <div class="text-end">
+                  <div class="fw-bold" style="color:var(--gc-gold);">₹${o.amount || 0}</div>
+                  <span class="badge-status ${statusClass}">${o.status || 'pending'}</span>
+                </div>
+              </div>
+            </div>`;
+        });
+      } catch {
+        list.innerHTML = '<p style="color:var(--gc-muted);" class="text-center py-3">Could not load orders.</p>';
+      }
+    }
+
+    // Update profile form
+    document.getElementById('updateProfileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveProfileBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
+      const user = auth.currentUser;
+      const name  = document.getElementById('editName').value.trim();
+      const phone = document.getElementById('editPhone').value.trim();
+      const dob   = document.getElementById('editDob').value;
+      try {
+        await updateProfile(user, { displayName: name });
+        await setDoc(doc(db, 'users', user.uid), { name, phone, dob }, { merge: true });
+        document.getElementById('profileName').textContent  = name  || '—';
+        document.getElementById('profilePhone').textContent = phone || '—';
+        document.getElementById('profileDob').textContent   = dob   || '—';
+        if (phone && dob) document.getElementById('incompleteBanner').style.display = 'none';
+        showAlert('success', 'Saved!', 'Your profile has been updated.');
+      } catch (err) {
+        showAlert('error', 'Failed', err.message);
+      }
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await signOut(auth);
+      window.location.href = 'login.html';
+    });
+
+    // Auth state
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        loadProfile(user);
+      } else {
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('notLoggedIn').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

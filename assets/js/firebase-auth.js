@@ -52,11 +52,14 @@ function updateNavAuth(user) {
   const btns = document.querySelectorAll('a[href="login.html"].btn');
   btns.forEach(btn => {
     if (user) {
-      btn.textContent = "Sign Out";
-      btn.href = "#";
-      btn.onclick = (e) => { e.preventDefault(); signOut(auth).then(() => location.reload()); };
+      const photo = user.photoURL
+        ? `<img src="${user.photoURL}" style="width:28px;height:28px;border-radius:50%;border:2px solid #f5c842;object-fit:cover;" alt="avatar">`
+        : `<i class="fas fa-user-circle fa-lg"></i>`;
+      btn.innerHTML = `${photo} <span class="ms-1 d-none d-lg-inline">My Profile</span>`;
+      btn.href = "profile.html";
+      btn.onclick = null;
     } else {
-      btn.textContent = "Sign In";
+      btn.innerHTML = "Sign In";
       btn.href = "login.html";
       btn.onclick = null;
     }
@@ -81,7 +84,7 @@ if (loginForm) {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       await showAlert("success", "Welcome back!", "You are now signed in.");
-      window.location.href = "index-2.html";
+      window.location.href = "profile.html";
     } catch (err) {
       setLoading(submitBtn, false);
       const msg = {
@@ -110,7 +113,7 @@ if (loginForm) {
           lastLogin: serverTimestamp()
         }, { merge: true });
         await showAlert("success", "Welcome!", `Signed in as ${user.displayName}`);
-        window.location.href = "index-2.html";
+        window.location.href = "profile.html";
       } catch (err) {
         if (err.code !== "auth/popup-closed-by-user") {
           showAlert("error", "Google Sign-In Failed", err.message);
@@ -153,7 +156,7 @@ if (registerForm) {
         createdAt: serverTimestamp()
       });
       await showAlert("success", "Account Created!", "Welcome to GameCoin Store.");
-      window.location.href = "index-2.html";
+      window.location.href = "profile.html";
     } catch (err) {
       setLoading(submitBtn, false);
       const msg = {
@@ -181,7 +184,7 @@ if (googleRegisterBtn) {
         createdAt: serverTimestamp()
       }, { merge: true });
       await showAlert("success", "Account Created!", `Welcome, ${user.displayName}!`);
-      window.location.href = "index-2.html";
+      window.location.href = "profile.html";
     } catch (err) {
       if (err.code !== "auth/popup-closed-by-user") {
         showAlert("error", "Google Sign-Up Failed", err.message);
