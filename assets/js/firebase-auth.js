@@ -66,7 +66,15 @@ function updateNavAuth(user) {
   });
 }
 
-onAuthStateChanged(auth, updateNavAuth);
+onAuthStateChanged(auth, (user) => {
+  updateNavAuth(user);
+  /* redirect away from auth pages if already signed in */
+  const authPages = ["login.html", "register.html", "forgot-password.html"];
+  const page = window.location.pathname.split("/").pop();
+  if (user && authPages.includes(page)) {
+    window.location.href = "profile.html";
+  }
+});
 
 /* ══════════════════════════════════════
    LOGIN
@@ -83,7 +91,6 @@ if (loginForm) {
     setLoading(submitBtn, true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      await showAlert("success", "Welcome back!", "You are now signed in.");
       window.location.href = "profile.html";
     } catch (err) {
       setLoading(submitBtn, false);
@@ -112,7 +119,6 @@ if (loginForm) {
           photo: user.photoURL,
           lastLogin: serverTimestamp()
         }, { merge: true });
-        await showAlert("success", "Welcome!", `Signed in as ${user.displayName}`);
         window.location.href = "profile.html";
       } catch (err) {
         if (err.code !== "auth/popup-closed-by-user") {
@@ -122,6 +128,8 @@ if (loginForm) {
     });
   }
 }
+
+/* Google sign-up redirect */
 
 /* ══════════════════════════════════════
    REGISTER
@@ -155,7 +163,6 @@ if (registerForm) {
         name, email, phone, dob,
         createdAt: serverTimestamp()
       });
-      await showAlert("success", "Account Created!", "Welcome to GameCoin Store.");
       window.location.href = "profile.html";
     } catch (err) {
       setLoading(submitBtn, false);
@@ -183,7 +190,6 @@ if (googleRegisterBtn) {
         photo: user.photoURL,
         createdAt: serverTimestamp()
       }, { merge: true });
-      await showAlert("success", "Account Created!", `Welcome, ${user.displayName}!`);
       window.location.href = "profile.html";
     } catch (err) {
       if (err.code !== "auth/popup-closed-by-user") {
