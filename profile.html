@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <link rel="stylesheet" href="assets/css/designs.min9d30.css?version=1784376539">
   <link rel="stylesheet" href="assets/css/gamecoinstore-theme.css">
-  <link rel="icon" type="image/x-icon" href="assets/images/rechargefavicon.png">
+  <link rel="icon" type="image/x-icon" href="assets/images/gamecoin-favicon.svg">
   <style>
     body { padding-top: 106px; }
 
@@ -151,7 +151,7 @@
     <!-- Loading state -->
     <div id="loadingState" class="text-center py-5">
       <div class="spinner-border text-warning" role="status"></div>
-      <p class="mt-3 text-muted">Loading your profileâ€¦</p>
+      <p class="mt-3 text-muted">Loading your profile…</p>
     </div>
 
     <!-- Profile Tab -->
@@ -179,11 +179,11 @@
         <!-- Tier progress -->
         <div class="text-center mb-4">
           <div class="tier-name" id="tierName">Coin Recruit</div>
-          <div class="tier-badge">Bronze Member &middot; New Member &middot; â‚¹0 spent</div>
+          <div class="tier-badge">Bronze Member &middot; New Member &middot; ?0 spent</div>
           <div class="progress-bar-track mt-2">
             <div class="progress-bar-fill" id="tierProgress" style="width:0%"></div>
           </div>
-          <small style="color:var(--gc-muted);" id="tierMsg">â‚¹1,000 more to reach Coin Warrior</small>
+          <small style="color:var(--gc-muted);" id="tierMsg">?1,000 more to reach Coin Warrior</small>
         </div>
 
         <hr style="border-color:var(--gc-border);">
@@ -193,22 +193,22 @@
           <div class="info-row">
             <i class="fas fa-user"></i>
             <span>Name</span>
-            <strong id="profileName">â€”</strong>
+            <strong id="profileName">—</strong>
           </div>
           <div class="info-row">
             <i class="fas fa-envelope"></i>
             <span>Email</span>
-            <strong id="profileEmail">â€”</strong>
+            <strong id="profileEmail">—</strong>
           </div>
           <div class="info-row">
             <i class="fas fa-phone"></i>
             <span>Phone</span>
-            <strong id="profilePhone">â€”</strong>
+            <strong id="profilePhone">—</strong>
           </div>
           <div class="info-row">
             <i class="fas fa-birthday-cake"></i>
             <span>Date of Birth</span>
-            <strong id="profileDob">â€”</strong>
+            <strong id="profileDob">—</strong>
           </div>
         </div>
 
@@ -316,8 +316,8 @@
       document.getElementById('tab-profile').classList.add('active');
 
       // Set basic info from Auth
-      document.getElementById('profileName').textContent  = user.displayName || 'â€”';
-      document.getElementById('profileEmail').textContent = user.email || 'â€”';
+      document.getElementById('profileName').textContent  = user.displayName || '—';
+      document.getElementById('profileEmail').textContent = user.email || '—';
       document.getElementById('editName').value = user.displayName || '';
 
       if (user.photoURL) {
@@ -329,8 +329,8 @@
       const snap = await getDoc(doc(db, 'users', user.uid));
       if (snap.exists()) {
         const data = snap.data();
-        document.getElementById('profilePhone').textContent = data.phone || 'â€”';
-        document.getElementById('profileDob').textContent   = data.dob   || 'â€”';
+        document.getElementById('profilePhone').textContent = data.phone || '—';
+        document.getElementById('profileDob').textContent   = data.dob   || '—';
         document.getElementById('editPhone').value = data.phone || '';
         document.getElementById('editDob').value   = data.dob   || '';
 
@@ -347,7 +347,7 @@
           const pct = Math.min(100, Math.round((spent / tier.target) * 100));
           document.getElementById('tierProgress').style.width = pct + '%';
           document.getElementById('tierMsg').textContent =
-            `â‚¹${(tier.target - spent).toLocaleString()} more to reach ${tier.next}`;
+            `?${(tier.target - spent).toLocaleString()} more to reach ${tier.next}`;
         } else {
           document.getElementById('tierProgress').style.width = '100%';
           document.getElementById('tierMsg').textContent = 'You have reached the highest tier!';
@@ -373,7 +373,7 @@
         list.innerHTML = '';
         snap.forEach(d => {
           const o = d.data();
-          const date = o.createdAt?.toDate().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) || 'â€”';
+          const date = o.createdAt?.toDate().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' }) || '—';
           const statusClass = o.status === 'completed' ? 'badge-success' : 'badge-pending';
           list.innerHTML += `
             <div class="order-card">
@@ -383,7 +383,7 @@
                   <small style="color:var(--gc-muted);">${o.packageName || ''} &middot; ${date}</small>
                 </div>
                 <div class="text-end">
-                  <div class="fw-bold" style="color:var(--gc-gold);">â‚¹${o.amount || 0}</div>
+                  <div class="fw-bold" style="color:var(--gc-gold);">?${o.amount || 0}</div>
                   <span class="badge-status ${statusClass}">${o.status || 'pending'}</span>
                 </div>
               </div>
@@ -399,7 +399,7 @@
       e.preventDefault();
       const btn = document.getElementById('saveProfileBtn');
       btn.disabled = true;
-      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Savingâ€¦';
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Saving…';
       const user = auth.currentUser;
       const name  = document.getElementById('editName').value.trim();
       const phone = document.getElementById('editPhone').value.trim();
@@ -407,9 +407,9 @@
       try {
         await updateProfile(user, { displayName: name });
         await setDoc(doc(db, 'users', user.uid), { name, phone, dob }, { merge: true });
-        document.getElementById('profileName').textContent  = name  || 'â€”';
-        document.getElementById('profilePhone').textContent = phone || 'â€”';
-        document.getElementById('profileDob').textContent   = dob   || 'â€”';
+        document.getElementById('profileName').textContent  = name  || '—';
+        document.getElementById('profilePhone').textContent = phone || '—';
+        document.getElementById('profileDob').textContent   = dob   || '—';
         if (phone && dob) document.getElementById('incompleteBanner').style.display = 'none';
         showAlert('success', 'Saved!', 'Your profile has been updated.');
       } catch (err) {
