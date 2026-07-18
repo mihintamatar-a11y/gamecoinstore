@@ -166,6 +166,30 @@ if (registerForm) {
   });
 }
 
+/* Google sign-up button on register page */
+const googleRegisterBtn = document.querySelector("#googleRegisterBtn");
+if (googleRegisterBtn) {
+  googleRegisterBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      await setDoc(doc(db, "users", user.uid), {
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL,
+        createdAt: serverTimestamp()
+      }, { merge: true });
+      await showAlert("success", "Account Created!", `Welcome, ${user.displayName}!`);
+      window.location.href = "index-2.html";
+    } catch (err) {
+      if (err.code !== "auth/popup-closed-by-user") {
+        showAlert("error", "Google Sign-Up Failed", err.message);
+      }
+    }
+  });
+}
+
 /* ══════════════════════════════════════
    FORGOT PASSWORD
 ══════════════════════════════════════ */
