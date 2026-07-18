@@ -1,0 +1,218 @@
+/* =============================================
+   GameCoin Store – Theme Override
+   Replaces the Recharge Arena navy/cyan palette
+   with a dark purple + gold gaming aesthetic
+   ============================================= */
+
+/* ---------- Google Font ---------- */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+
+/* ---------- CSS Variables ---------- */
+:root {
+  --gc-gold:        #f5c842;
+  --gc-gold-dark:   #c9971a;
+  --gc-purple:      #7b2ff7;
+  --gc-purple-dark: #4a0fbf;
+  --gc-bg:          #0d0a1e;
+  --gc-bg2:         #130d2b;
+  --gc-surface:     #1e1538;
+  --gc-surface2:    #261c44;
+  --gc-text:        #ece8ff;
+  --gc-muted:       #a89fc8;
+  --gc-border:      rgba(245,200,66,.18);
+  --gc-glow:        rgba(245,200,66,.22);
+}
+
+/* ---------- Base ---------- */
+body {
+  background-color: var(--gc-bg) !important;
+  color: var(--gc-text) !important;
+  font-family: 'Bricolage Grotesque', sans-serif;
+}
+
+a { color: var(--gc-text) !important; }
+
+/* ---------- Navbar ---------- */
+#mainNav {
+  background: linear-gradient(0deg, rgba(123,47,247,.10), rgba(123,47,247,.10)),
+              rgba(19,13,43,.75) !important;
+  border-bottom: 1px solid var(--gc-border);
+}
+
+/* ---------- Ticker bar ---------- */
+.whatsapp-ticker {
+  background: linear-gradient(to right, rgba(123,47,247,.18), rgba(245,200,66,.12)) !important;
+}
+.ticker-item:hover { color: var(--gc-gold) !important; }
+
+/* ---------- Gradient accent (replaces gradient-blue) ---------- */
+.gradient-blue,
+.mobile-bottom-search,
+.mobile-bottom-nav {
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple)) !important;
+}
+.gradient-blue-rev {
+  background: linear-gradient(to left, var(--gc-gold), var(--gc-purple)) !important;
+}
+
+/* ---------- Navbar brand & logo ---------- */
+.navbar-brand .brand-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: .5px;
+}
+
+/* ---------- Buttons ---------- */
+.btn-info {
+  background: linear-gradient(135deg, var(--gc-purple), var(--gc-purple-dark)) !important;
+  border-color: var(--gc-purple) !important;
+  color: #fff !important;
+}
+.btn-info:hover {
+  background: linear-gradient(135deg, var(--gc-gold-dark), var(--gc-gold)) !important;
+  border-color: var(--gc-gold) !important;
+  color: #0d0a1e !important;
+}
+.btn-outline-light:hover { color: var(--gc-bg) !important; }
+
+/* ---------- Section headings ---------- */
+#popular-games h3,
+#popular-blogs h2,
+#about-recharge-arena h2 {
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+
+/* ---------- Game cards ---------- */
+#popular-games .card { background: transparent !important; }
+#popular-games .card:hover { transform: scale(1.07); }
+.game-title-home a { color: var(--gc-text) !important; }
+
+/* ---------- Blog cards ---------- */
+.blogSwiper .card .card-body { background-color: var(--gc-surface) !important; }
+.blogSwiper .card .card-body p,
+.blogSwiper .card .card-body h5 { color: var(--gc-text) !important; }
+.blogSwiper .card .card-body a { color: var(--gc-gold) !important; }
+
+/* ---------- Carousel ---------- */
+.indexSwiper .card-body { background: var(--gc-bg2) !important; }
+
+/* ---------- Package / product buttons ---------- */
+.package-button {
+  background-color: var(--gc-surface2) !important;
+  border-color: var(--gc-surface2) !important;
+}
+.package-button:hover {
+  border-color: var(--gc-gold-dark) !important;
+  background-color: rgba(245,200,66,.12) !important;
+}
+.btn-check:checked + .package-button {
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple)) !important;
+  border-color: var(--gc-gold) !important;
+  color: #0d0a1e !important;
+}
+.package-button .popular-badge { background-color: var(--gc-gold-dark) !important; color: #0d0a1e !important; }
+.package-button .popular-badge::after { border-right-color: var(--gc-gold-dark) !important; }
+
+/* ---------- Support feature cards ---------- */
+.support-card { background: linear-gradient(135deg, var(--gc-surface2), var(--gc-bg2)) !important; }
+.support-card:hover i { color: var(--gc-gold) !important; }
+
+/* ---------- Footer ---------- */
+footer { background: var(--gc-bg2) !important; }
+footer .text-info,
+footer h4.text-info { color: var(--gc-gold) !important; }
+footer hr.gradient-blue { border: none; height: 2px;
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple)) !important; }
+
+/* ---------- Footer quick-links ---------- */
+.footer-quick {
+  background: var(--gc-surface) !important;
+  border-color: var(--gc-border) !important;
+}
+.footer-quick:hover { border-color: var(--gc-gold) !important; }
+.footer-quick .text-info { color: var(--gc-gold) !important; }
+
+/* ---------- Bottom sheet ---------- */
+.bottom-sheet {
+  background: var(--gc-surface) !important;
+  border-top: 2px solid var(--gc-gold);
+}
+.bottom-sheet a,
+.bottom-sheet h3 { color: var(--gc-gold) !important; }
+
+/* ---------- Accordion (FAQ) ---------- */
+.accordion-item { background: var(--gc-surface) !important; border-color: var(--gc-border) !important; }
+.accordion-button { color: var(--gc-text) !important; }
+.accordion-button:not(.collapsed) {
+  background: rgba(245,200,66,.08) !important;
+  color: var(--gc-gold) !important;
+  border-bottom-color: var(--gc-border) !important;
+}
+#faqAccordian a { color: var(--gc-gold) !important; }
+
+/* ---------- Search bar ---------- */
+.search-bar .input-group,
+.input-group-glass {
+  border-color: var(--gc-border) !important;
+}
+.search-bar .input-group:focus-within,
+.input-group-glass:focus-within {
+  border-color: var(--gc-gold) !important;
+  box-shadow: 0 0 0 2px var(--gc-glow);
+}
+
+/* ---------- Payment tiles ---------- */
+.payment-tile { border-color: var(--gc-border) !important; background: rgba(30,21,56,.85) !important; }
+.payment-tile:hover { border-color: var(--gc-gold) !important; box-shadow: 0 10px 25px var(--gc-glow) !important; }
+.payment-tile.active { border-color: var(--gc-gold) !important; box-shadow: 0 0 25px var(--gc-glow) !important; }
+
+/* ---------- Swiper bullets ---------- */
+.swiper-pagination-bullet-active { background: var(--gc-gold) !important; }
+
+/* ---------- Toast notice ---------- */
+.msgNotice { background: linear-gradient(135deg, var(--gc-surface2), var(--gc-bg)) !important; }
+.msgNotice::after { background: linear-gradient(90deg, var(--gc-gold), var(--gc-purple), var(--gc-gold)) !important; }
+
+/* ---------- Modal (info) ---------- */
+#informationModal .modal-content { background: var(--gc-surface) !important; }
+#informationModal .modal-header { background: linear-gradient(to right, var(--gc-gold), var(--gc-purple)) !important; }
+#informationModal .btn-confirm { background: linear-gradient(to right, var(--gc-gold), var(--gc-purple)) !important; color: #0d0a1e !important; }
+
+/* ---------- Payment summary ---------- */
+.payment-summary-card { background: radial-gradient(120% 120% at 80% 0%, var(--gc-surface2) 0%, var(--gc-bg2) 45%, var(--gc-bg) 100%) !important; }
+
+/* ---------- Username verify ---------- */
+.username-verify-container.verifying { border-color: rgba(245,200,66,.5) !important; }
+.username-verify-container.verified-success { border-color: var(--gc-gold) !important; }
+
+/* ---------- Index page background ---------- */
+#indexPage {
+  background-color: var(--gc-bg) !important;
+  background-image: none !important;
+}
+
+/* ---------- Logo text fallback (when image is replaced) ---------- */
+.gamecoin-logo-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 1px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .gamecoin-logo-text { font-size: 1.3rem; }
+}
