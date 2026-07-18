@@ -100,29 +100,56 @@ a { color: var(--gc-text) !important; }
 }
 
 /* ---------- Game cards ---------- */
+.gc-game-col { padding-left: .5rem !important; padding-right: .5rem !important; }
+
 #popular-games .card {
-  background: transparent !important;
-  border-radius: 14px !important;
+  background: var(--gc-surface) !important;
+  border: 1px solid var(--gc-border) !important;
+  border-radius: 16px !important;
   overflow: hidden;
-  transition: transform .25s ease, box-shadow .25s ease;
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+  position: relative;
+}
+#popular-games .card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(180deg, transparent 50%, rgba(13,10,30,.85) 100%);
+  pointer-events: none;
 }
 #popular-games .card:hover {
-  transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 32px rgba(245,200,66,.25) !important;
+  transform: translateY(-8px);
+  box-shadow: 0 12px 40px rgba(123,47,247,.35), 0 0 0 2px var(--gc-gold) !important;
+  border-color: var(--gc-gold) !important;
 }
 .game-thumbnail {
-  border-radius: 14px;
-  border: 2px solid transparent;
-  transition: border-color .25s;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  transition: transform .28s ease;
 }
 #popular-games .card:hover .game-thumbnail {
-  border-color: var(--gc-gold);
+  transform: scale(1.08);
+}
+
+.game-title-home {
+  margin-top: .5rem !important;
+  padding: 0 .25rem;
 }
 .game-title-home a {
   color: var(--gc-text) !important;
-  font-size: .85rem !important;
+  font-size: .82rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .3px;
 }
 .game-title-home a:hover { color: var(--gc-gold) !important; }
+
+@media (max-width: 576px) {
+  .gc-game-col { padding-left: .3rem !important; padding-right: .3rem !important; }
+  .game-title-home a { font-size: .75rem !important; }
+}
 
 /* ---------- Blog cards ---------- */
 .blogSwiper .card {
