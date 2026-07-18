@@ -83,24 +83,67 @@ a { color: var(--gc-text) !important; }
 /* ---------- Section headings ---------- */
 #popular-games h3,
 #popular-blogs h2,
-#about-recharge-arena h2 {
-  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+#about-gamecoin-store h2 {
+  position: relative;
   display: inline-block;
+  padding-bottom: .4rem;
+}
+#popular-games h3::after,
+#popular-blogs h2::after,
+#about-gamecoin-store h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 60px; height: 3px;
+  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple));
+  border-radius: 2px;
 }
 
 /* ---------- Game cards ---------- */
-#popular-games .card { background: transparent !important; }
-#popular-games .card:hover { transform: scale(1.07); }
-.game-title-home a { color: var(--gc-text) !important; }
+#popular-games .card {
+  background: transparent !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+#popular-games .card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(245,200,66,.25) !important;
+}
+.game-thumbnail {
+  border-radius: 14px;
+  border: 2px solid transparent;
+  transition: border-color .25s;
+}
+#popular-games .card:hover .game-thumbnail {
+  border-color: var(--gc-gold);
+}
+.game-title-home a {
+  color: var(--gc-text) !important;
+  font-size: .85rem !important;
+}
+.game-title-home a:hover { color: var(--gc-gold) !important; }
 
 /* ---------- Blog cards ---------- */
-.blogSwiper .card .card-body { background-color: var(--gc-surface) !important; }
+.blogSwiper .card {
+  border: none !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+.blogSwiper .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 28px rgba(123,47,247,.3) !important;
+}
+.blogSwiper .card img { border-radius: 14px 14px 0 0; }
+.blogSwiper .card .card-body {
+  background-color: var(--gc-surface) !important;
+  border-top: 2px solid var(--gc-purple);
+}
 .blogSwiper .card .card-body p,
 .blogSwiper .card .card-body h5 { color: var(--gc-text) !important; }
 .blogSwiper .card .card-body a { color: var(--gc-gold) !important; }
+.blogSwiper .card .card-body p i { color: var(--gc-purple); }
 
 /* ---------- Carousel ---------- */
 .indexSwiper .card-body { background: var(--gc-bg2) !important; }
@@ -122,24 +165,54 @@ a { color: var(--gc-text) !important; }
 .package-button .popular-badge { background-color: var(--gc-gold-dark) !important; color: #0d0a1e !important; }
 .package-button .popular-badge::after { border-right-color: var(--gc-gold-dark) !important; }
 
-/* ---------- Support feature cards ---------- */
-.support-card { background: linear-gradient(135deg, var(--gc-surface2), var(--gc-bg2)) !important; }
-.support-card:hover i { color: var(--gc-gold) !important; }
+/* ---------- Support / Why-us feature cards ---------- */
+#about-gamecoin-store .d-flex {
+  background: var(--gc-surface) !important;
+  border-radius: 14px;
+  padding: 1.2rem;
+  border-left: 3px solid var(--gc-gold);
+  transition: box-shadow .25s, border-color .25s;
+}
+#about-gamecoin-store .d-flex:hover {
+  box-shadow: 0 6px 24px rgba(245,200,66,.18) !important;
+  border-color: var(--gc-purple);
+}
+.support-card {
+  background: linear-gradient(135deg, var(--gc-purple-dark), var(--gc-purple)) !important;
+  border-radius: 12px !important;
+}
+.support-card i { color: #fff !important; }
+#about-gamecoin-store h6 { color: var(--gc-gold) !important; font-weight: 700; }
+#about-gamecoin-store p { color: var(--gc-muted) !important; font-size: .92rem; margin-bottom: 0; }
 
 /* ---------- Footer ---------- */
-footer { background: var(--gc-bg2) !important; }
-footer .text-info,
-footer h4.text-info { color: var(--gc-gold) !important; }
-footer hr.gradient-blue { border: none; height: 2px;
-  background: linear-gradient(to right, var(--gc-gold), var(--gc-purple)) !important; }
+footer {
+  background: linear-gradient(180deg, var(--gc-bg2) 0%, #0a0818 100%) !important;
+  border-top: 1px solid var(--gc-border);
+}
+footer h6 { color: var(--gc-purple) !important; letter-spacing: 1.5px; text-transform: uppercase; font-size: .78rem; }
+footer h2 { color: var(--gc-gold) !important; }
+footer hr.gradient-blue {
+  border: none; height: 2px;
+  background: linear-gradient(to right, var(--gc-purple), var(--gc-gold), var(--gc-purple)) !important;
+}
+footer p, footer a { color: var(--gc-muted) !important; }
+footer a:hover { color: var(--gc-gold) !important; }
 
 /* ---------- Footer quick-links ---------- */
 .footer-quick {
   background: var(--gc-surface) !important;
-  border-color: var(--gc-border) !important;
+  border: 1px solid var(--gc-border) !important;
+  border-radius: 12px !important;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
 }
-.footer-quick:hover { border-color: var(--gc-gold) !important; }
-.footer-quick .text-info { color: var(--gc-gold) !important; }
+.footer-quick:hover {
+  border-color: var(--gc-gold) !important;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px var(--gc-glow);
+}
+.footer-quick span { color: var(--gc-muted) !important; font-size: .78rem; }
+.footer-quick i { color: var(--gc-gold) !important; }
 
 /* ---------- Bottom sheet ---------- */
 .bottom-sheet {
