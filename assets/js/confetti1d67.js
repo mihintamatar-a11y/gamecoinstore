@@ -1,158 +1,166 @@
-const templates = {
-    classic: {
-        count: 70,
-        colors: ["#ff962d", "#ffffff", "#4895ef", "#ffd700"],
-        shapes: ["square", "circle", "rect", "ribbon"],
-    },
-    gaming: {
-        count: 90,
-        colors: ["#ff00ff", "#00ffff", "#00ff66", "#ffff00"],
-        shapes: ["square", "triangle", "star"],
-    },
-    "gold-rain": {
-        count: 80,
-        colors: ["#ffd700", "#ffcc00", "#ffb300"],
-        shapes: ["rect", "ribbon", "star"],
-    },
-    football: {
-        count: 60,
-        colors: ["#ffffff"],
-        shapes: ["football", "circle"],
-    },
-    trophies: {
-        count: 55,
-        colors: ["#ffd700"],
-        shapes: ["trophy", "star"],
-    },
-    diamonds: {
-        count: 75,
-        colors: ["#d6f3ff", "#9bd6ff", "#ffffff"],
-        shapes: ["diamond"],
-    },
-    fireworks: {
-        count: 110,
-        colors: ["#ff006e", "#8338ec", "#3a86ff", "#ffbe0b"],
-        shapes: ["circle", "star"],
-    },
-    arena: {
-        count: 90,
-        colors: ["#00bfff", "#ff6b00", "#ffffff"],
-        shapes: ["square", "circle", "triangle", "ribbon"],
-    },
-};
+/* GameCoin Store – Lightning Strike effect (replaces confetti) */
 
-const STAR_SVG =
-    '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1.5l2.95 6.62 7.05.78-5.3 4.93 1.5 7.17L12 17.6l-6.2 3.4 1.5-7.17-5.3-4.93 7.05-.78z"/></svg>';
+function generateBolt(x1, y1, x2, y2, spread, depth) {
+  if (depth <= 0) return [[x1, y1], [x2, y2]];
+  const mx = (x1 + x2) / 2 + (Math.random() - 0.5) * spread;
+  const my = (y1 + y2) / 2 + (Math.random() - 0.3) * spread * 0.15;
+  const left  = generateBolt(x1, y1, mx, my, spread / 1.8, depth - 1);
+  const right = generateBolt(mx, my, x2, y2, spread / 1.8, depth - 1);
+  return [...left, ...right.slice(1)];
+}
 
-function rand(min, max) {
-    return Math.random() * (max - min) + min;
+function generateBranch(points, branchCount) {
+  const branches = [];
+  for (let b = 0; b < branchCount; b++) {
+    const startIdx = Math.floor(points.length * (0.2 + Math.random() * 0.5));
+    const [bx, by] = points[startIdx];
+    const endX = bx + (Math.random() - 0.5) * 160;
+    const endY = by + (Math.random() * 0.4 + 0.2) * (window.innerHeight - by);
+    branches.push(generateBolt(bx, by, endX, endY, 60, 5));
+  }
+  return branches;
+}
+
+function drawBolt(ctx, points, alpha, widthMain) {
+  if (!points || points.length < 2) return;
+
+  // Outer glow pass
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+  ctx.shadowBlur = 28;
+  ctx.shadowColor = 'rgba(123,47,247,0.9)';
+  ctx.strokeStyle = `rgba(180,140,255,${alpha * 0.6})`;
+  ctx.lineWidth = widthMain * 2.5;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  // Mid glow pass
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+  ctx.shadowBlur = 12;
+  ctx.shadowColor = '#a370ff';
+  ctx.strokeStyle = `rgba(220,200,255,${alpha * 0.9})`;
+  ctx.lineWidth = widthMain;
+  ctx.stroke();
+
+  // Bright core
+  ctx.beginPath();
+  ctx.moveTo(points[0][0], points[0][1]);
+  for (let i = 1; i < points.length; i++) ctx.lineTo(points[i][0], points[i][1]);
+  ctx.shadowBlur = 4;
+  ctx.shadowColor = '#fff';
+  ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+  ctx.lineWidth = widthMain * 0.35;
+  ctx.stroke();
+
+  ctx.shadowBlur = 0;
 }
 
 window.initConfetti = function () {
-    const options = { intensity: 2, duration: 3500 };
-    const template = window.CONFETTI_TEMPLATE;
-    if (!template || template === "none") return;
-    const config = templates[template] || templates.classic;
-    const opts = Object.assign(
-        {
-            duration: 3500, // how long the burst runs before fading out, ms
-            intensity: 1, // multiplier on piece count, e.g. 0.5 for a smaller burst
-            fadeOut: 800, // per-piece exit animation length, ms
-        },
-        options
-    );
+  if (window.CONFETTI_TEMPLATE === 'none') return;
 
-    const reduceMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-    ).matches;
+  /* ── Canvas ── */
+  const canvas = document.createElement('canvas');
+  canvas.id = 'lightning-canvas';
+  canvas.style.cssText =
+    'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;';
+  document.body.appendChild(canvas);
+  const ctx = canvas.getContext('2d');
 
-    let container = document.getElementById("confetti-container");
-    if (!container) {
-        container = document.createElement("div");
-        container.id = "confetti-container";
-        container.className = "confetti-container";
-        document.body.appendChild(container);
+  function resize() {
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* ── Flash overlay ── */
+  const flash = document.createElement('div');
+  flash.style.cssText =
+    'position:fixed;inset:0;pointer-events:none;z-index:9998;' +
+    'background:linear-gradient(to bottom,rgba(200,170,255,0.18),transparent 60%);' +
+    'opacity:0;';
+  document.body.appendChild(flash);
+
+  let strikes = 0;
+  const MAX_STRIKES = 3;
+
+  function strike() {
+    if (strikes >= MAX_STRIKES) {
+      setTimeout(() => {
+        canvas.remove();
+        flash.remove();
+        window.removeEventListener('resize', resize);
+      }, 400);
+      return;
+    }
+    strikes++;
+
+    /* Flash the screen */
+    flash.style.transition = 'none';
+    flash.style.opacity = '1';
+    requestAnimationFrame(() => {
+      flash.style.transition = 'opacity 0.35s ease-out';
+      flash.style.opacity = '0';
+    });
+
+    /* Generate 1–2 main bolts */
+    const numBolts = Math.random() > 0.45 ? 2 : 1;
+    const allBolts  = [];
+    const allBranches = [];
+
+    for (let b = 0; b < numBolts; b++) {
+      const startX = canvas.width * (0.1 + Math.random() * 0.8);
+      const endX   = startX + (Math.random() - 0.5) * 180;
+      const pts = generateBolt(startX, 0, endX, canvas.height, 130, 9);
+      allBolts.push(pts);
+      allBranches.push(...generateBranch(pts, Math.floor(Math.random() * 2) + 1));
     }
 
-    const pieceCount = reduceMotion
-        ? Math.min(20, Math.round(config.count * opts.intensity))
-        : Math.round(config.count * opts.intensity);
+    /* Animate: quick appear → hold → fade */
+    let frame = 0;
+    const HOLD = 5;
+    const FADE = 10;
+    const TOTAL = HOLD + FADE;
 
-    const pieces = [];
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < pieceCount; i++) {
-        const piece = document.createElement("div");
-        const shape =
-            config.shapes[Math.floor(Math.random() * config.shapes.length)];
-        piece.className = "confetti " + shape;
+      const alpha = frame < HOLD
+        ? 1
+        : 1 - (frame - HOLD) / FADE;
 
-        // size drives a sense of depth: bigger pieces fall faster and sway
-        // wider, like they're closer to the camera; smaller ones drift slower
-        const size = rand(7, 20);
-        const depth = (size - 7) / 13; // 0 (far/small) .. 1 (near/large)
+      allBolts.forEach(pts   => drawBolt(ctx, pts,   alpha, 3.5));
+      allBranches.forEach(pts => drawBolt(ctx, pts,   alpha * 0.55, 1.8));
 
-        if (shape === "star") {
-            piece.style.width = size + "px";
-            piece.style.height = size + "px";
-            piece.innerHTML = STAR_SVG;
-        } else if (shape === "rect" || shape === "ribbon") {
-            piece.style.width = size * 0.5 + "px";
-            piece.style.height = size * 1.6 + "px";
-        } else if (shape !== "triangle") {
-            piece.style.width = size + "px";
-            piece.style.height = size + "px";
-        }
-
-        const color =
-            config.colors[Math.floor(Math.random() * config.colors.length)];
-        if (shape === "triangle" || shape === "star") {
-            piece.style.color = color;
-        } else if (shape !== "football") {
-            piece.style.background = color;
-        }
-
-        const opacity = rand(0.7, 1);
-        const fallDuration = rand(7, 11) - depth * 2.5; // nearer pieces fall a bit faster
-        const swayDuration = rand(2.2, 4.2);
-        const sway = 12 + depth * 26; // nearer pieces swing wider
-        const fallDelay = rand(0, fallDuration);
-        const swayDelay = rand(0, swayDuration);
-        const entranceDelay = reduceMotion ? 0 : rand(0, 1.2); // staggered burst-in
-
-        piece.style.left = rand(0, 100) + "%";
-        piece.style.setProperty("--piece-opacity", opacity);
-        piece.style.setProperty("--sway", sway + "px");
-        piece.style.zIndex = String(Math.round(depth * 10));
-        piece.style.animationDuration =
-            "0.45s, " + fallDuration + "s, " + swayDuration + "s";
-        piece.style.animationDelay =
-            entranceDelay +
-            "s, -" +
-            fallDelay +
-            "s, -" +
-            swayDelay +
-            "s";
-        piece.style.animationIterationCount = "1, infinite, infinite";
-
-        container.appendChild(piece);
-        pieces.push(piece);
+      frame++;
+      if (frame <= TOTAL) {
+        requestAnimationFrame(tick);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const delay = 500 + Math.random() * 900;
+        setTimeout(strike, delay);
+      }
     }
-    setTimeout(() => {
-        pieces.forEach((piece, i) => {
-            const delay = reduceMotion ? 0 : rand(0, 500);
-            setTimeout(() => {
-                piece.style.animation = `confetti-exit ${opts.fadeOut}ms ease-in forwards`;
-            }, delay);
-        });
 
-        setTimeout(() => {
-            container.remove();
-        }, opts.fadeOut + 600);
-    }, opts.duration);
+    tick();
+  }
+
+  /* Kick off first strike after a short pause */
+  setTimeout(strike, 400);
 };
+
 window.clearConfetti = function () {
-    document.querySelectorAll('.confetti-container').forEach(el => el.remove());
+  const c = document.getElementById('lightning-canvas');
+  if (c) c.remove();
 };
-$(document).ready(function () {
-    $(initConfetti);
-})
+
+(function ready(fn) {
+  if (typeof $ !== 'undefined') {
+    $(document).ready(fn);
+  } else {
+    document.addEventListener('DOMContentLoaded', fn);
+  }
+})(function () { window.initConfetti(); });
